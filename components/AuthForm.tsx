@@ -9,6 +9,8 @@ import { Input } from './ui/input'
 import Image from 'next/image'
 import Link from 'next/link'
 import { toast } from 'sonner'
+import FormField from './FormField'
+import { useRouter } from 'next/navigation'
 
 type FormType = 'sign-up' | 'sign-in'
 
@@ -21,6 +23,7 @@ const authFormSchema = (type: FormType) => {
 }
 
 const AuthForm = ({ type }: { type: FormType }) => {
+  const router = useRouter()
   const formSchema = authFormSchema(type)
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -36,9 +39,11 @@ const AuthForm = ({ type }: { type: FormType }) => {
   function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       if (type === 'sign-up') {
-        console.log('SIGN UP', values)
-      } else {
-        console.log('SIGN IN', values)
+        toast.success('Account created successfully. Please sign in.')
+        router.push('/sign-in')
+      } else if (type === 'sign-in') {
+        toast.success('Signed in successfully.')
+        router.push('/')
       }
     } catch (error) {
       // Handle error
@@ -66,9 +71,28 @@ const AuthForm = ({ type }: { type: FormType }) => {
             onSubmit={form.handleSubmit(onSubmit)}
             className='w-full space-y-6 mt-4 form'
           >
-            {!isSignIn && <p>Name</p>}
-            <p>Email</p>
-            <p>Password</p>
+            {!isSignIn && (
+              <FormField
+                name='name'
+                control={form.control}
+                label='Name'
+                placeholder='Your name'
+              />
+            )}
+            <FormField
+              name='email'
+              control={form.control}
+              label='Email'
+              placeholder='johnsmith@example.com'
+              type='email'
+            />
+            <FormField
+              name='password'
+              control={form.control}
+              label='Password'
+              placeholder='********'
+              type='password'
+            />
 
             <Button type='submit' className='btn'>
               {isSignIn ? 'Sign in' : 'Create an account'}
