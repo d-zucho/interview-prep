@@ -10,7 +10,7 @@ const InterviewCard = ({
   role,
   type,
   techstack,
-  interviewId,
+  id,
   createdAt,
 }: InterviewCardProps) => {
   const feedback = null as Feedback | null
@@ -18,6 +18,7 @@ const InterviewCard = ({
   const formattedDate = dayjs(
     feedback?.createdAt || createdAt || Date.now()
   ).format('MMM D, YYYY')
+
   return (
     <div className='card-border w-[360px] max-sm:w-full min-h-96'>
       <div className='card-interview'>
@@ -57,15 +58,11 @@ const InterviewCard = ({
         </div>
 
         <div className='flex flex-row justify-between'>
-          {/* <DisplayTechIcons techStack={techstack} /> */}
+          <DisplayTechIcons techStack={techstack} />
 
           <Button className='btn-primary'>
             <Link
-              href={
-                feedback
-                  ? `/interviews/${interviewId}/feedback`
-                  : `/interviews/${interviewId}`
-              }
+              href={feedback ? `/interview/${id}/feedback` : `/interview/${id}`}
             >
               {feedback ? 'Check Feedback' : 'View Interview'}
             </Link>
